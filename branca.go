@@ -1,3 +1,6 @@
+// Package branca implements encoding and decoding for branca tokens.
+//
+// https://github.com/tuupola/branca-spec
 package branca
 
 import (
