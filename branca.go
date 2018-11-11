@@ -22,8 +22,8 @@ type Codec struct {
 	base62 *basex.Encoding
 }
 
-// NewCodec creates a codec
-func NewCodec(key string) (*Codec, error) {
+// New creates a codec
+func New(key string) (*Codec, error) {
 	aead, err := chacha20poly1305.NewX([]byte(key))
 	if err != nil {
 		return nil, err

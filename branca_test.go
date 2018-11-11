@@ -6,7 +6,7 @@ import (
 )
 
 func Test_encode(t *testing.T) {
-	codec, err := NewCodec("supersecretkeyyoushouldnotcommit")
+	codec, err := New("supersecretkeyyoushouldnotcommit")
 	if err != nil {
 		t.Error(err)
 	}
