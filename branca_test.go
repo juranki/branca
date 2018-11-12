@@ -88,7 +88,18 @@ func Test_parallel(t *testing.T) {
 	}
 }
 
-func BenchmarkEncode(b *testing.B) {
+func BenchmarkEncode20Bytes(b *testing.B) {
+	codec, err := New("supersecretkeyyoushouldnotcommit")
+	if err != nil {
+		b.Error(err)
+	}
+	message := []byte("012345678901234567890")
+	for n := 0; n < b.N; n++ {
+		codec.Encode(message)
+	}
+}
+
+func BenchmarkEncode50Bytes(b *testing.B) {
 	codec, err := New("supersecretkeyyoushouldnotcommit")
 	if err != nil {
 		b.Error(err)
@@ -98,13 +109,49 @@ func BenchmarkEncode(b *testing.B) {
 		codec.Encode(message)
 	}
 }
-func BenchmarkDecode(b *testing.B) {
+
+func BenchmarkEncode100Bytes(b *testing.B) {
+	codec, err := New("supersecretkeyyoushouldnotcommit")
+	if err != nil {
+		b.Error(err)
+	}
+	message := []byte("0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789")
+	for n := 0; n < b.N; n++ {
+		codec.Encode(message)
+	}
+}
+
+func BenchmarkDecode20Bytes(b *testing.B) {
 	codec, err := New("supersecretkeyyoushouldnotcommit")
 	if err != nil {
 		b.Error(err)
 	}
 
-	token := "1h4IciYOEawvyw9yCwKTDUnuQ6BTck6xQxYecjVIOdGbRhZfQvuqDCcDywvrDEEXFY7vwKuwfYL8aQSmg0LKH6PuqAryBB0iqPgzTtrxp8ZIu6kGhJv"
+	token := "2seo65HD4ERrLj2eDcDYNZKy0YVuSfRRTkF9Nv9sOtcdZw2m5aUWDDKJhWPyH3QbTfvAzPlqZwZ79Vh4PNJabEqF"
+	for n := 0; n < b.N; n++ {
+		codec.Decode(token)
+	}
+}
+
+func BenchmarkDecode50Bytes(b *testing.B) {
+	codec, err := New("supersecretkeyyoushouldnotcommit")
+	if err != nil {
+		b.Error(err)
+	}
+
+	token := "AG8pFcEs2TYYzplnIGSlMv0DafABhxbhrDmkAesCD928BrgesqIffH7eg89a0zUtu6gQnKBakI20dfMwCQmySXZutJkteHwiUVzIFj0dLvDkaat3Mt3hDUMDVZPgsQWe"
+	for n := 0; n < b.N; n++ {
+		codec.Decode(token)
+	}
+}
+
+func BenchmarkDecode100Bytes(b *testing.B) {
+	codec, err := New("supersecretkeyyoushouldnotcommit")
+	if err != nil {
+		b.Error(err)
+	}
+
+	token := "LWTFSDXQP8ybC1i5JNqOBg2qYs6Ae3Z4qAbxBaS499FIPTViAWy56Ev98c4gLxdRKKVCcADWW60ziHhcXISDDy1q18eXu5L3ruyAF7NBLNnKSPNSZQYqTonOwmkYPRqlbj5lx3dg2h2Ju28wNYcMmdP519VlndsBQT0X6ZEc3iUoaXjBwgQMLBCzsI6Q9tkP7Yy"
 	for n := 0; n < b.N; n++ {
 		codec.Decode(token)
 	}
