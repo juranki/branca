@@ -87,3 +87,25 @@ func Test_parallel(t *testing.T) {
 		}(i)
 	}
 }
+
+func BenchmarkEncode(b *testing.B) {
+	codec, err := New("supersecretkeyyoushouldnotcommit")
+	if err != nil {
+		b.Error(err)
+	}
+	message := []byte("01234567890123456789012345678901234567890123456789")
+	for n := 0; n < b.N; n++ {
+		codec.Encode(message)
+	}
+}
+func BenchmarkDecode(b *testing.B) {
+	codec, err := New("supersecretkeyyoushouldnotcommit")
+	if err != nil {
+		b.Error(err)
+	}
+
+	token := "1h4IciYOEawvyw9yCwKTDUnuQ6BTck6xQxYecjVIOdGbRhZfQvuqDCcDywvrDEEXFY7vwKuwfYL8aQSmg0LKH6PuqAryBB0iqPgzTtrxp8ZIu6kGhJv"
+	for n := 0; n < b.N; n++ {
+		codec.Decode(token)
+	}
+}
