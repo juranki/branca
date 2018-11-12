@@ -73,7 +73,7 @@ func (c *Codec) Decode(token string) ([]byte, time.Time, error) {
 
 // encode assumes that slices are exactly the right length
 func encode(aead cipher.AEAD, nonce, message []byte, ts time.Time) ([]byte, error) {
-	header := make([]byte, 29)
+	header := make([]byte, 29, 29+len(message)+aead.Overhead())
 	copy(header, version)
 	binary.BigEndian.PutUint32(header[1:], uint32(ts.Unix()))
 	copy(header[5:], nonce)
