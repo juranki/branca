@@ -1,6 +1,9 @@
 package branca
 
 import (
+	"fmt"
+	"runtime"
+	"sync"
 	"testing"
 	"time"
 )
@@ -21,6 +24,12 @@ func Test_encode(t *testing.T) {
 		wantErr bool
 	}{
 		{"Hello world!", "875GH233T7IYrxtgXxlQBYiFobZMQdHAT51vChKsAIYCFxZtL1evV54vYqLyZtQ0ekPHt8kJHQp0a", false},
+		{
+			"1234567890123456789012345678901234567890",
+			"1h4IciYOEawvyw9yCwKTDUnuQ6BTck6xQxYecjVIOdGbRhZfQvuqDCcDywvrDEEXFY7vwKuwfYL8aQSmg0LKH6PuqAryBB0iqPgzTtrxp8ZIu6kGhJv",
+			false,
+		},
+		{"                    ", "2sLAhjtzkx9Wt8rZmN5KHw3HlK45sGsl1etFJ7a7wXqJcNWsMhwCFU5GH01zFy23LYwU3VBX5dEOkNcNXZ9GcQ0h", false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.message, func(t *testing.T) {
@@ -47,5 +56,34 @@ func Test_encode(t *testing.T) {
 				return
 			}
 		})
+	}
+}
+
+func Test_parallel(t *testing.T) {
+	var wg sync.WaitGroup
+	codec, err := New("supersecretkeyyoushouldnotcommit")
+	if err != nil {
+		t.Error(err)
+	}
+	for i := 0; i < 5000; i++ {
+		wg.Add(1)
+		go func(msg_nro int) {
+			cText, err := codec.Encode([]byte(fmt.Sprintf("message_%d", msg_nro)))
+			if err != nil {
+				t.Errorf("encode failed: %d\n%#v", msg_nro, err)
+				return
+			}
+			// force yield
+			runtime.Gosched()
+			clearText, _, err := codec.Decode(cText)
+			if err != nil {
+				t.Errorf("decode failed: %d\n%#v", msg_nro, err)
+				return
+			}
+			if fmt.Sprintf("message_%d", msg_nro) != string(clearText) {
+				t.Errorf("decode expected: %s got:%s\n", fmt.Sprintf("message_%d", msg_nro), clearText)
+				return
+			}
+		}(i)
 	}
 }
