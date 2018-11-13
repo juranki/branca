@@ -33,11 +33,7 @@ func Test_encode(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.message, func(t *testing.T) {
-			tokenBytes, err := encode(codec.aead, nonce, []byte(tt.message), ts)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("encode() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+			tokenBytes := encode(codec.aead, nonce, []byte(tt.message), ts)
 			token := codec.base62.Encode(tokenBytes)
 			if token != tt.want {
 				t.Errorf("encode() = %v, want %v", token, tt.want)

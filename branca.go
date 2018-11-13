@@ -47,11 +47,9 @@ func (c *Codec) Encode(message []byte) (string, error) {
 	if _, err := rand.Read(nonce); err != nil {
 		return "", err
 	}
-	ciphertext, err := encode(c.aead, nonce, message, time.Now())
-	if err != nil {
-		return "", err
-	}
-	return c.base62.Encode(ciphertext), nil
+	return c.base62.Encode(
+		encode(c.aead, nonce, message, time.Now()),
+	), nil
 }
 
 // Decode message
@@ -72,11 +70,10 @@ func (c *Codec) Decode(token string) ([]byte, time.Time, error) {
 }
 
 // encode assumes that slices are exactly the right length
-func encode(aead cipher.AEAD, nonce, message []byte, ts time.Time) ([]byte, error) {
+func encode(aead cipher.AEAD, nonce, message []byte, ts time.Time) []byte {
 	header := make([]byte, 29, 29+len(message)+aead.Overhead())
 	copy(header, version)
 	binary.BigEndian.PutUint32(header[1:], uint32(ts.Unix()))
 	copy(header[5:], nonce)
-	ciphertext := aead.Seal(header, nonce, message, header)
-	return ciphertext, nil
+	return aead.Seal(header, nonce, message, header)
 }
