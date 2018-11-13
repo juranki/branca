@@ -6,6 +6,8 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/gbrlsnchs/jwt/v2"
 )
 
 func Test_encode(t *testing.T) {
@@ -150,5 +152,25 @@ func BenchmarkDecode100Bytes(b *testing.B) {
 	token := "LWTFSDXQP8ybC1i5JNqOBg2qYs6Ae3Z4qAbxBaS499FIPTViAWy56Ev98c4gLxdRKKVCcADWW60ziHhcXISDDy1q18eXu5L3ruyAF7NBLNnKSPNSZQYqTonOwmkYPRqlbj5lx3dg2h2Ju28wNYcMmdP519VlndsBQT0X6ZEc3iUoaXjBwgQMLBCzsI6Q9tkP7Yy"
 	for n := 0; n < b.N; n++ {
 		codec.Decode(token)
+	}
+}
+
+func BenchmarkJWTVerify56Bytes(b *testing.B) {
+	type Token struct {
+		*jwt.JWT
+		IsLoggedIn  bool   `json:"isLoggedIn"`
+		CustomField string `json:"customField,omitempty"`
+	}
+	hs256 := jwt.NewHS256("secret")
+	// paylaod is 56 bytes {"sub":"1234567890","name":"John Doe","iat":1516239022}
+	token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." +
+		"eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ." +
+		"lZ1zDoGNAv3u-OclJtnoQKejE8_viHlMtGlAxE8AE0Q"
+
+	for n := 0; n < b.N; n++ {
+		payload, sig, _ := jwt.Parse(token)
+		hs256.Verify(payload, sig)
+		var jot Token
+		jwt.Unmarshal(payload, &jot)
 	}
 }
