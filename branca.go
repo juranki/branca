@@ -14,9 +14,9 @@ import (
 	"golang.org/x/crypto/chacha20poly1305"
 )
 
-var (
-	version = []byte{0xBA}
-	base62  = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+const (
+	version byte = 0xBA
+	base62       = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 )
 
 // Codec encodes/decodes branca tokens
@@ -58,7 +58,7 @@ func (c *Codec) Decode(token string) ([]byte, time.Time, error) {
 	if err != nil {
 		return nil, time.Time{}, err
 	}
-	if tokenBytes[0] != version[0] {
+	if tokenBytes[0] != version {
 		return nil, time.Time{}, errors.New("invalid version")
 	}
 	message, err := c.aead.Open(nil, tokenBytes[5:29], tokenBytes[29:], tokenBytes[0:29])
@@ -72,7 +72,7 @@ func (c *Codec) Decode(token string) ([]byte, time.Time, error) {
 // encode assumes that slices are exactly the right length
 func encode(aead cipher.AEAD, nonce, message []byte, ts time.Time) []byte {
 	header := make([]byte, 29, 29+len(message)+aead.Overhead())
-	copy(header, version)
+	header[0] = version
 	binary.BigEndian.PutUint32(header[1:], uint32(ts.Unix()))
 	copy(header[5:], nonce)
 	return aead.Seal(header, nonce, message, header)
