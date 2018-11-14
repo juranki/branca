@@ -1,4 +1,4 @@
-// Package branca implements encoding and decoding for branca tokens.
+// Package branca encodes and decodes branca tokens.
 //
 // https://github.com/tuupola/branca-spec
 package branca
@@ -25,7 +25,7 @@ type Codec struct {
 	base62 *basex.Encoding
 }
 
-// New creates a codec
+// New creates a codec. The key must be exactly 32 bytes long.
 func New(key string) (*Codec, error) {
 	aead, err := chacha20poly1305.NewX([]byte(key))
 	if err != nil {
@@ -52,7 +52,7 @@ func (c *Codec) Encode(message []byte) (string, error) {
 	), nil
 }
 
-// Decode message
+// Decode message. Returns payload and creation time of token.
 func (c *Codec) Decode(token string) ([]byte, time.Time, error) {
 	tokenBytes, err := c.base62.Decode(token)
 	if err != nil {
