@@ -16,28 +16,34 @@ import (
 
 const (
 	version byte = 0xBA
-	base62       = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 )
 
 // Codec encodes/decodes branca tokens
 type Codec struct {
-	aead   cipher.AEAD
-	base62 *basex.Encoding
+	aead           cipher.AEAD
+	stringEncoding StringEncoding
 }
 
 // New creates a codec. The key must be exactly 32 bytes long.
+// Tokens are stringified with base62.
 func New(key string) (*Codec, error) {
+	enc, err := basex.NewEncoding("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+	if err != nil {
+		return nil, err
+	}
+	return NewWithEncoding(key, enc)
+}
+
+// NewWithEncoding creates a codec. The key must be exactly 32 bytes long.
+// Tokens are stringified with provided encoding.
+func NewWithEncoding(key string, stringEncoding StringEncoding) (*Codec, error) {
 	aead, err := chacha20poly1305.NewX([]byte(key))
 	if err != nil {
 		return nil, err
 	}
-	enc, err := basex.NewEncoding(base62)
-	if err != nil {
-		return nil, err
-	}
 	return &Codec{
-		aead:   aead,
-		base62: enc,
+		aead:           aead,
+		stringEncoding: stringEncoding,
 	}, nil
 }
 
@@ -47,14 +53,14 @@ func (c *Codec) Encode(message []byte) (string, error) {
 	if _, err := rand.Read(nonce); err != nil {
 		return "", err
 	}
-	return c.base62.Encode(
+	return c.stringEncoding.Encode(
 		encode(c.aead, nonce, message, time.Now()),
 	), nil
 }
 
 // Decode message. Returns payload and creation time of token.
 func (c *Codec) Decode(token string) ([]byte, time.Time, error) {
-	tokenBytes, err := c.base62.Decode(token)
+	tokenBytes, err := c.stringEncoding.Decode(token)
 	if err != nil {
 		return nil, time.Time{}, err
 	}
