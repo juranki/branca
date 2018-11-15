@@ -36,6 +36,9 @@ func New(key string) (*Codec, error) {
 
 // NewWithEncoding creates a codec. The key must be exactly 32 bytes long.
 // Tokens are stringified with provided encoding.
+//
+// WARNING!! I'll probably remove support for alternative string encoders once
+// I find a fast base62 encoder that supports the branca spec.
 func NewWithEncoding(key string, stringEncoding StringEncoding) (*Codec, error) {
 	aead, err := chacha20poly1305.NewX([]byte(key))
 	if err != nil {
