@@ -26,10 +26,6 @@ type Codec struct {
 // New creates a codec. The key must be exactly 32 bytes long.
 // Tokens are stringified with base62.
 func New(key string) (*Codec, error) {
-	// enc, err := basex.NewEncoding("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
-	// if err != nil {
-	// 	return nil, err
-	// }
 	return NewWithEncoding(key, internalBase62{})
 }
 
