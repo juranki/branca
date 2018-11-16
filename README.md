@@ -75,16 +75,31 @@ Base64 is significantly faster than base62, but it doesn't comply with branca sp
 are the benchmark results from my laptop:
 
 ```
-BenchmarkEncode20Bytes-8               	   30000	     59175 ns/op	    2496 B/op	      12 allocs/op
-BenchmarkEncode50Bytes-8               	   10000	    121749 ns/op	    2544 B/op	      12 allocs/op
-BenchmarkEncode100Bytes-8              	    5000	    280559 ns/op	    5024 B/op	      14 allocs/op
-BenchmarkDecode20Bytes-8               	  300000	      5066 ns/op	     640 B/op	       8 allocs/op
-BenchmarkDecode50Bytes-8               	  200000	      9001 ns/op	     832 B/op	       8 allocs/op
-BenchmarkDecode100Bytes-8              	  100000	     18078 ns/op	    1520 B/op	       9 allocs/op
-BenchmarkEncode20BytesBase64-8         	 1000000	      1319 ns/op	     304 B/op	       4 allocs/op
-BenchmarkEncode50BytesBase64-8         	 1000000	      1349 ns/op	     384 B/op	       4 allocs/op
-BenchmarkEncode100BytesBase64-8        	 1000000	      1614 ns/op	     608 B/op	       4 allocs/op
-BenchmarkDecode20BytesBase64-8         	 5000000	       353 ns/op	     192 B/op	       3 allocs/op
-BenchmarkDecode50BytesBase64-8         	 3000000	       435 ns/op	     240 B/op	       3 allocs/op
-BenchmarkDecode100BytesBase64-8        	 3000000	       631 ns/op	     360 B/op	       3 allocs/op
+BenchmarkEncode20Bytes-8               	  100000	     15206 ns/op	     784 B/op	      13 allocs/op
+BenchmarkEncode50Bytes-8               	   50000	     27561 ns/op	     896 B/op	      13 allocs/op
+BenchmarkEncode100Bytes-8              	   30000	     57926 ns/op	    1248 B/op	      13 allocs/op
+BenchmarkDecode20Bytes-8               	  300000	      4070 ns/op	     688 B/op	      12 allocs/op
+BenchmarkDecode50Bytes-8               	  200000	      5953 ns/op	    1152 B/op	      15 allocs/op
+BenchmarkDecode100Bytes-8              	  200000	      9393 ns/op	    1824 B/op	      18 allocs/op
+
+BenchmarkEncode20BytesBasex-8          	   30000	     58547 ns/op	    2496 B/op	      12 allocs/op
+BenchmarkEncode50BytesBasex-8          	   10000	    117016 ns/op	    2544 B/op	      12 allocs/op
+BenchmarkEncode100BytesBasex-8         	    5000	    267366 ns/op	    5024 B/op	      14 allocs/op
+BenchmarkDecode20BytesBasex-8          	  300000	      4814 ns/op	     640 B/op	       8 allocs/op
+BenchmarkDecode50BytesBasex-8          	  200000	      8787 ns/op	     832 B/op	       8 allocs/op
+BenchmarkDecode100BytesBasex-8         	  100000	     17546 ns/op	    1520 B/op	       9 allocs/op
+
+BenchmarkEncode20BytesBase64-8         	 1000000	      1329 ns/op	     304 B/op	       4 allocs/op
+BenchmarkEncode50BytesBase64-8         	 1000000	      1441 ns/op	     384 B/op	       4 allocs/op
+BenchmarkEncode100BytesBase64-8        	 1000000	      1707 ns/op	     608 B/op	       4 allocs/op
+BenchmarkDecode20BytesBase64-8         	 2000000	       691 ns/op	     208 B/op	       3 allocs/op
+BenchmarkDecode50BytesBase64-8         	 2000000	       813 ns/op	     288 B/op	       3 allocs/op
+BenchmarkDecode100BytesBase64-8        	 1000000	      1042 ns/op	     480 B/op	       3 allocs/op
+
+BenchmarkEncode20BytesHashi-8          	  300000	      4559 ns/op	    1120 B/op	      15 allocs/op
+BenchmarkEncode50BytesHashi-8          	  300000	      5583 ns/op	    1296 B/op	      15 allocs/op
+BenchmarkEncode100BytesHashi-8         	  200000	      8559 ns/op	    2322 B/op	      19 allocs/op
+BenchmarkDecode20BytesHashi-8          	 1000000	      1553 ns/op	     272 B/op	       5 allocs/op
+BenchmarkDecode50BytesHashi-8          	 1000000	      2046 ns/op	     448 B/op	       6 allocs/op
+BenchmarkDecode100BytesHashi-8         	  500000	      2938 ns/op	     720 B/op	       7 allocs/op
 ```
