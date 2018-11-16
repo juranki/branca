@@ -10,7 +10,6 @@ import (
 	"errors"
 	"time"
 
-	"github.com/eknkc/basex"
 	"golang.org/x/crypto/chacha20poly1305"
 )
 
@@ -27,11 +26,11 @@ type Codec struct {
 // New creates a codec. The key must be exactly 32 bytes long.
 // Tokens are stringified with base62.
 func New(key string) (*Codec, error) {
-	enc, err := basex.NewEncoding("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
-	if err != nil {
-		return nil, err
-	}
-	return NewWithEncoding(key, enc)
+	// enc, err := basex.NewEncoding("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+	// if err != nil {
+	// 	return nil, err
+	// }
+	return NewWithEncoding(key, internalBase62{})
 }
 
 // NewWithEncoding creates a codec. The key must be exactly 32 bytes long.

@@ -2,8 +2,12 @@ package branca
 
 import (
 	"encoding/base64"
+	"log"
 
-	"github.com/hashicorp/vault/helper/base62"
+	"github.com/juranki/branca/base62"
+
+	"github.com/eknkc/basex"
+	hashiBase62 "github.com/hashicorp/vault/helper/base62"
 )
 
 // StringEncoding can be used to specify custom string encoding for tokens.
@@ -19,9 +23,18 @@ var Base64URLEncoding StringEncoding
 // HashicorpBase62Encoding can be used to stringify tokens with github.com/hashicorp/vault/helper/base62.
 var HashicorpBase62Encoding StringEncoding
 
+// BasexBase62Encoding can be used to stringify tokens with github.com/eknkc/basex.
+// It encodes strings according to the branca spec.
+var BasexBase62Encoding StringEncoding
+
 func init() {
+	var err error
 	Base64URLEncoding = base64URLEncoding{}
 	HashicorpBase62Encoding = hashicorpBase62{}
+	BasexBase62Encoding, err = basex.NewEncoding("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 type base64URLEncoding struct{}
@@ -31,5 +44,10 @@ func (e base64URLEncoding) Decode(s string) ([]byte, error) { return base64.URLE
 
 type hashicorpBase62 struct{}
 
-func (e hashicorpBase62) Encode(b []byte) string          { return base62.Encode(b) }
-func (e hashicorpBase62) Decode(s string) ([]byte, error) { return base62.Decode(s), nil }
+func (e hashicorpBase62) Encode(b []byte) string          { return hashiBase62.Encode(b) }
+func (e hashicorpBase62) Decode(s string) ([]byte, error) { return hashiBase62.Decode(s), nil }
+
+type internalBase62 struct{}
+
+func (e internalBase62) Encode(b []byte) string          { return base62.Encode(b) }
+func (e internalBase62) Decode(s string) ([]byte, error) { return base62.Decode(s) }

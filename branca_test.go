@@ -249,6 +249,12 @@ func BenchmarkEncode100Bytes(b *testing.B)       { benchmarkEncode(nil, s100, b)
 func BenchmarkDecode20Bytes(b *testing.B)        { benchmarkDecode(nil, t20, b) }
 func BenchmarkDecode50Bytes(b *testing.B)        { benchmarkDecode(nil, t50, b) }
 func BenchmarkDecode100Bytes(b *testing.B)       { benchmarkDecode(nil, t100, b) }
+func BenchmarkEncode20BytesBasex(b *testing.B)   { benchmarkEncode(BasexBase62Encoding, s20, b) }
+func BenchmarkEncode50BytesBasex(b *testing.B)   { benchmarkEncode(BasexBase62Encoding, s50, b) }
+func BenchmarkEncode100BytesBasex(b *testing.B)  { benchmarkEncode(BasexBase62Encoding, s100, b) }
+func BenchmarkDecode20BytesBasex(b *testing.B)   { benchmarkDecode(BasexBase62Encoding, t20, b) }
+func BenchmarkDecode50BytesBasex(b *testing.B)   { benchmarkDecode(BasexBase62Encoding, t50, b) }
+func BenchmarkDecode100BytesBasex(b *testing.B)  { benchmarkDecode(BasexBase62Encoding, t100, b) }
 func BenchmarkEncode20BytesBase64(b *testing.B)  { benchmarkEncode(Base64URLEncoding, s20, b) }
 func BenchmarkEncode50BytesBase64(b *testing.B)  { benchmarkEncode(Base64URLEncoding, s50, b) }
 func BenchmarkEncode100BytesBase64(b *testing.B) { benchmarkEncode(Base64URLEncoding, s100, b) }
