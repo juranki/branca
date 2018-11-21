@@ -8,6 +8,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/juranki/branca/encoding"
+	"github.com/juranki/branca/encoding/base62basex"
+	"github.com/juranki/branca/encoding/base62hashicorp"
+	"github.com/juranki/branca/encoding/base64url"
+
 	"github.com/eknkc/basex"
 	"github.com/gbrlsnchs/jwt/v2"
 	"golang.org/x/crypto/sha3"
@@ -69,7 +74,7 @@ func Test_encode(t *testing.T) {
 }
 
 func Test_encodehashicorp(t *testing.T) {
-	codec, err := NewWithEncoding(k, HashicorpBase62Encoding)
+	codec, err := NewWithEncoding(k, base62hashicorp.New())
 	if err != nil {
 		t.Error(err)
 	}
@@ -115,7 +120,7 @@ func Test_encodehashicorp(t *testing.T) {
 }
 
 func TestBase64(t *testing.T) {
-	codec, err := NewWithEncoding(k, Base64URLEncoding)
+	codec, err := NewWithEncoding(k, base64url.New())
 	if err != nil {
 		t.Error(err)
 	}
@@ -189,7 +194,7 @@ func Test_parallel(t *testing.T) {
 	}
 }
 
-func benchmarkEncode(encoding StringEncoding, payload string, b *testing.B) {
+func benchmarkEncode(encoding encoding.StringEncoding, payload string, b *testing.B) {
 	var codec *Codec
 	var err error
 	if encoding == nil {
@@ -209,7 +214,7 @@ func benchmarkEncode(encoding StringEncoding, payload string, b *testing.B) {
 	}
 }
 
-func benchmarkDecode(encoding StringEncoding, token string, b *testing.B) {
+func benchmarkDecode(encoding encoding.StringEncoding, token string, b *testing.B) {
 	var codec *Codec
 	var err error
 	if encoding == nil {
@@ -249,25 +254,25 @@ func BenchmarkEncode100Bytes(b *testing.B)       { benchmarkEncode(nil, s100, b)
 func BenchmarkDecode20Bytes(b *testing.B)        { benchmarkDecode(nil, t20, b) }
 func BenchmarkDecode50Bytes(b *testing.B)        { benchmarkDecode(nil, t50, b) }
 func BenchmarkDecode100Bytes(b *testing.B)       { benchmarkDecode(nil, t100, b) }
-func BenchmarkEncode20BytesBasex(b *testing.B)   { benchmarkEncode(BasexBase62Encoding, s20, b) }
-func BenchmarkEncode50BytesBasex(b *testing.B)   { benchmarkEncode(BasexBase62Encoding, s50, b) }
-func BenchmarkEncode100BytesBasex(b *testing.B)  { benchmarkEncode(BasexBase62Encoding, s100, b) }
-func BenchmarkDecode20BytesBasex(b *testing.B)   { benchmarkDecode(BasexBase62Encoding, t20, b) }
-func BenchmarkDecode50BytesBasex(b *testing.B)   { benchmarkDecode(BasexBase62Encoding, t50, b) }
-func BenchmarkDecode100BytesBasex(b *testing.B)  { benchmarkDecode(BasexBase62Encoding, t100, b) }
-func BenchmarkEncode20BytesBase64(b *testing.B)  { benchmarkEncode(Base64URLEncoding, s20, b) }
-func BenchmarkEncode50BytesBase64(b *testing.B)  { benchmarkEncode(Base64URLEncoding, s50, b) }
-func BenchmarkEncode100BytesBase64(b *testing.B) { benchmarkEncode(Base64URLEncoding, s100, b) }
-func BenchmarkDecode20BytesBase64(b *testing.B)  { benchmarkDecode(Base64URLEncoding, t20_64, b) }
-func BenchmarkDecode50BytesBase64(b *testing.B)  { benchmarkDecode(Base64URLEncoding, t50_64, b) }
-func BenchmarkDecode100BytesBase64(b *testing.B) { benchmarkDecode(Base64URLEncoding, t100_64, b) }
-func BenchmarkEncode20BytesHashi(b *testing.B)   { benchmarkEncode(HashicorpBase62Encoding, s20, b) }
-func BenchmarkEncode50BytesHashi(b *testing.B)   { benchmarkEncode(HashicorpBase62Encoding, s50, b) }
-func BenchmarkEncode100BytesHashi(b *testing.B)  { benchmarkEncode(HashicorpBase62Encoding, s100, b) }
-func BenchmarkDecode20BytesHashi(b *testing.B)   { benchmarkDecode(HashicorpBase62Encoding, t20Hashi, b) }
-func BenchmarkDecode50BytesHashi(b *testing.B)   { benchmarkDecode(HashicorpBase62Encoding, t50Hashi, b) }
+func BenchmarkEncode20BytesBasex(b *testing.B)   { benchmarkEncode(base62basex.New(), s20, b) }
+func BenchmarkEncode50BytesBasex(b *testing.B)   { benchmarkEncode(base62basex.New(), s50, b) }
+func BenchmarkEncode100BytesBasex(b *testing.B)  { benchmarkEncode(base62basex.New(), s100, b) }
+func BenchmarkDecode20BytesBasex(b *testing.B)   { benchmarkDecode(base62basex.New(), t20, b) }
+func BenchmarkDecode50BytesBasex(b *testing.B)   { benchmarkDecode(base62basex.New(), t50, b) }
+func BenchmarkDecode100BytesBasex(b *testing.B)  { benchmarkDecode(base62basex.New(), t100, b) }
+func BenchmarkEncode20BytesBase64(b *testing.B)  { benchmarkEncode(base64url.New(), s20, b) }
+func BenchmarkEncode50BytesBase64(b *testing.B)  { benchmarkEncode(base64url.New(), s50, b) }
+func BenchmarkEncode100BytesBase64(b *testing.B) { benchmarkEncode(base64url.New(), s100, b) }
+func BenchmarkDecode20BytesBase64(b *testing.B)  { benchmarkDecode(base64url.New(), t20_64, b) }
+func BenchmarkDecode50BytesBase64(b *testing.B)  { benchmarkDecode(base64url.New(), t50_64, b) }
+func BenchmarkDecode100BytesBase64(b *testing.B) { benchmarkDecode(base64url.New(), t100_64, b) }
+func BenchmarkEncode20BytesHashi(b *testing.B)   { benchmarkEncode(base62hashicorp.New(), s20, b) }
+func BenchmarkEncode50BytesHashi(b *testing.B)   { benchmarkEncode(base62hashicorp.New(), s50, b) }
+func BenchmarkEncode100BytesHashi(b *testing.B)  { benchmarkEncode(base62hashicorp.New(), s100, b) }
+func BenchmarkDecode20BytesHashi(b *testing.B)   { benchmarkDecode(base62hashicorp.New(), t20Hashi, b) }
+func BenchmarkDecode50BytesHashi(b *testing.B)   { benchmarkDecode(base62hashicorp.New(), t50Hashi, b) }
 func BenchmarkDecode100BytesHashi(b *testing.B) {
-	benchmarkDecode(HashicorpBase62Encoding, t100Hashi, b)
+	benchmarkDecode(base62hashicorp.New(), t100Hashi, b)
 }
 
 func BenchmarkSHA3Sign100BytesBase64URL(b *testing.B) {

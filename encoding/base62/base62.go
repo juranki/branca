@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"math"
 	"math/big"
+
+	"github.com/juranki/branca/encoding"
 )
 
 var (
@@ -12,6 +14,16 @@ var (
 	charValues   map[byte]uint64
 	decodeBase   *big.Int
 )
+
+// New base62 StringEncoding that is compatible with branca spec.
+func New() encoding.StringEncoding {
+	return internalBase62{}
+}
+
+type internalBase62 struct{}
+
+func (e internalBase62) Encode(b []byte) string          { return encode(b) }
+func (e internalBase62) Decode(s string) ([]byte, error) { return decode(s) }
 
 func init() {
 	charValues = map[byte]uint64{}
@@ -22,8 +34,8 @@ func init() {
 	decodeBase.Exp(decodeBase, big.NewInt(10), nil)
 }
 
-// Encode bytes into base62 string
-func Encode(b []byte) string {
+// encode bytes into base62 string
+func encode(b []byte) string {
 	var slot *big.Int
 	zero := big.NewInt(0)
 	divident := big.NewInt(0)
@@ -47,8 +59,8 @@ func Encode(b []byte) string {
 	return string(bs[i+1:])
 }
 
-// Decode base62 string
-func Decode(s string) ([]byte, error) {
+// decode base62 string
+func decode(s string) ([]byte, error) {
 	l := len(s)
 	bs := []byte(s)
 	v := big.NewInt(0)

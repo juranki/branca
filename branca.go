@@ -10,6 +10,9 @@ import (
 	"errors"
 	"time"
 
+	"github.com/juranki/branca/encoding"
+	"github.com/juranki/branca/encoding/base62"
+
 	"golang.org/x/crypto/chacha20poly1305"
 )
 
@@ -20,13 +23,13 @@ const (
 // Codec encodes/decodes branca tokens
 type Codec struct {
 	aead           cipher.AEAD
-	stringEncoding StringEncoding
+	stringEncoding encoding.StringEncoding
 }
 
 // New creates a codec. The key must be exactly 32 bytes long.
 // Tokens are stringified with base62.
 func New(key string) (*Codec, error) {
-	return NewWithEncoding(key, internalBase62{})
+	return NewWithEncoding(key, base62.New())
 }
 
 // NewWithEncoding creates a codec. The key must be exactly 32 bytes long.
@@ -34,7 +37,7 @@ func New(key string) (*Codec, error) {
 //
 // WARNING!! I'll probably remove support for alternative string encoders once
 // I find a fast base62 encoder that supports the branca spec.
-func NewWithEncoding(key string, stringEncoding StringEncoding) (*Codec, error) {
+func NewWithEncoding(key string, stringEncoding encoding.StringEncoding) (*Codec, error) {
 	aead, err := chacha20poly1305.NewX([]byte(key))
 	if err != nil {
 		return nil, err
