@@ -55,14 +55,17 @@ Creation time: 2018-11-15 00:47:03 +0200 EET
 
 ## Using base64URL encoding instead of base62
 
-In the previous example, change
+
+To use base64URL encoding instead of base62 import `github.com/juranki/branca/encoding/base64url`
+and change following line of the previous example
 ```go
 codec, err := branca.New("01234567890123456789012345678901")
 ```
 to
 ```go
-codec, err := branca.NewWithEncoding("01234567890123456789012345678901", branca.Base64URLEncoding)
+codec, err := branca.NewWithEncoding("01234567890123456789012345678901", base64url.New())
 ```
+
 
 Output:
 ```
@@ -72,7 +75,7 @@ Creation time: 2018-11-15 00:47:17 +0200 EET
 ```
 
 Base64 is significantly faster than base62, but it doesn't comply with branca spec. Here 
-are the benchmark results from my laptop:
+are benchmark results using different string encoders:
 
 ```
 BenchmarkEncode20Bytes-8               	  100000	     15206 ns/op	     784 B/op	      13 allocs/op
